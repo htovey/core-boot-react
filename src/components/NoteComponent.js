@@ -63,7 +63,7 @@ class NoteComponent extends Component {
         if (this.validNote(note)) {
             event.preventDefault();
             //build note payload
-            const noteUrl = "http://localhost:8080/createUpdateNote";
+            const noteUrl = "http://ec2-3-21-103-74.us-east-2.compute.amazonaws.com:8080/createUpdateNote";
             const noteBody =  {
                 "noteId": note.noteId,
                 "category": note.category,

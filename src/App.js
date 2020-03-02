@@ -47,7 +47,7 @@ class App extends Component {
   }
 
   refreshNoteList = () => {
-    var url = "http://localhost:8080/getNotesForUser"
+    var url = "http://ec2-3-21-103-74.us-east-2.compute.amazonaws.com:8080/getNotesForUser"
     var result = FetchUtil.handleGet(url, this.state.userToken);
     result
     .then(response => response.json())
