@@ -53,7 +53,7 @@ class LoginComponent extends Component {
         if (this.validLogin(login)) {
             event.preventDefault();
             //build login payload
-            const loginUrl = "http://localhost:8080/getNotesForUser";
+            const loginUrl = "http://ec2-3-21-103-74.us-east-2.compute.amazonaws.com:8080/getNotesForUser";
             const userToken = "Basic "+base64.encode(login.username+":"+login.password)
             var response = FetchUtil.handleGet(loginUrl, userToken);
             response
