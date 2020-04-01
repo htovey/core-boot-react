@@ -31,7 +31,8 @@ const defaultToolbarSelectStyles = {
 class NoteListToolbarSelect extends Component {
     
     handleDelete = () => {
-        var url = "http://ec2-3-21-103-74.us-east-2.compute.amazonaws.com:8080/deleteNote";
+        var url = "http://104.155.129.244:8080/deleteNote";
+        //var url = "http://localhost:8080/deleteNote"
         var body = this.getNoteIdList(this.props.selectedRows)
         var result = FetchUtil.handlePost(url, this.props.userToken, body)
         .then(response => {
@@ -48,7 +49,8 @@ class NoteListToolbarSelect extends Component {
     }
 
     handleUpdate = () => {
-        var url = "http://localhost:8080/createUpdateNote";
+        var url = "http://104.155.129.244:8080/createUpdateNote";
+        //var url = "http://localhost:8080/createUpdateNote";
         var body = this.getNotePayload(this.props.selectedRows)
         var result = FetchUtil.handlePost(url, this.props.userToken, body)
         .then(response => {
