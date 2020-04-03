@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/core-boot-react/static/css/main.aa8b3375.chunk.css",
+    "main.js": "/core-boot-react/static/js/main.d87dfb35.chunk.js",
+    "main.js.map": "/core-boot-react/static/js/main.d87dfb35.chunk.js.map",
+    "runtime-main.js": "/core-boot-react/static/js/runtime-main.23711846.js",
+    "runtime-main.js.map": "/core-boot-react/static/js/runtime-main.23711846.js.map",
+    "static/js/2.755e7640.chunk.js": "/core-boot-react/static/js/2.755e7640.chunk.js",
+    "static/js/2.755e7640.chunk.js.map": "/core-boot-react/static/js/2.755e7640.chunk.js.map",
+    "index.html": "/core-boot-react/index.html",
+    "precache-manifest.ba1b613057f5a064144ca11ff52540ad.js": "/core-boot-react/precache-manifest.ba1b613057f5a064144ca11ff52540ad.js",
+    "service-worker.js": "/core-boot-react/service-worker.js",
+    "static/css/main.aa8b3375.chunk.css.map": "/core-boot-react/static/css/main.aa8b3375.chunk.css.map"
+  }
+}
