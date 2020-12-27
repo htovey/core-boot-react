@@ -4,7 +4,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import { withStyles } from '@material-ui/styles';
-import FetchUtil from '../utils/FetchUtil';
+import FetchUtil from '../../utils/FetchUtil';
 import NoteComponent from './NoteComponent';
 
 
@@ -12,12 +12,10 @@ const defaultToolbarSelectStyles = {
     iconButton: {
       marginRight: "24px",
       top: "40%",
-    //   display: "inline-block",
-    //   position: "relative",
       transform: "translateY(-50%)"
     },
     deleteIcon: {
-      color: "#000"
+      color: "red"
     },
     editIcon: {
         color: "#000"
@@ -30,9 +28,14 @@ const defaultToolbarSelectStyles = {
 
 class NoteListToolbarSelect extends Component {
     
+    updateRowData = (rowData) => {
+        if (rowData) {
+            this.props.updateSelectedRows(rowData);
+        }
+    }
+
     handleDelete = () => {
-        var url = "http://104.155.129.244:8080/deleteNote";
-        //var url = "http://localhost:8080/deleteNote"
+        var url = process.env.REACT_APP_API_URL+"/delete";
         var body = this.getNoteIdList(this.props.selectedRows)
         var result = FetchUtil.handlePost(url, this.props.userToken, body)
         .then(response => {
@@ -49,13 +52,12 @@ class NoteListToolbarSelect extends Component {
     }
 
     handleUpdate = () => {
-        var url = "http://104.155.129.244:8080/createUpdateNote";
-        //var url = "http://localhost:8080/createUpdateNote";
+        var url = process.env.REACT_APP_API_URL+"/note";
         var body = this.getNotePayload(this.props.selectedRows)
         var result = FetchUtil.handlePost(url, this.props.userToken, body)
         .then(response => {
             if (response.status === 200) {
-                console.log("Delete: Success***");
+                console.log("Update: Success***");
                 this.props.handleSuccess();
             }
         })
@@ -67,7 +69,7 @@ class NoteListToolbarSelect extends Component {
     }
 
     editNote = () => {
-        var updateNote = this.props.noteList[this.props.selectedRows.data[0].index];
+        var updateNote = this.props.noteList[this.props.selectedRows[0].index];
         this.props.createUpdateNote(updateNote);
     }
 
@@ -90,10 +92,11 @@ class NoteListToolbarSelect extends Component {
 
     render() {
         const { classes } = this.props;
-        var multiSelect = this.props.selectedRows.data.length > 1;
+        this.updateRowData(this.props.selectedRows.data);
+        //console.log("rows selected: "+this.props.selectedRows.length);
         return (
-            <div className={classes.divHeight}>
-               <Tooltip title={"Edit"}>
+            <div className={classes.divHeight} onChange={alert}>
+               {/* <Tooltip title={"Edit"}>
                     <IconButton className={classes.iconButton} disabled={multiSelect} onClick={this.editNote}>
                         {!multiSelect && <EditIcon className={classes.editIcon} />}
                     </IconButton>
@@ -104,10 +107,10 @@ class NoteListToolbarSelect extends Component {
                     </IconButton>
                 </Tooltip>
                 {this.props.openNote && <NoteComponent 
-                openNote={true} 
-                handleSubmit={this.props.handleSubmit}
-                noteModel={this.updateNote}
-                />  }
+                    openNote={true} 
+                    noteModel={this.updateNote}
+                    className="note"
+                />  } */}
             </div>
         );
     }

@@ -1,11 +1,8 @@
 import React, {Component} from 'react';
 import LoginFormDialog  from './LoginFormDialog';
-import '../styles/App.css';
-import fetch from 'node-fetch';
-import { MuiThemeProvider } from 'material-ui/styles';
+import '../../styles/App.css';
 import  base64  from 'base-64';
-import { booleanLiteral } from '@babel/types';
-import FetchUtil from '../utils/FetchUtil';
+import FetchUtil from '../../utils/FetchUtil';
 
 
 class LoginComponent extends Component {
@@ -27,20 +24,25 @@ class LoginComponent extends Component {
         }
     }
 
-    handleError(message) {
+    handleLoginSuccess(json, userToken) {
+        this.setState({styleClass: 'hideMe'});
+        this.props.handleSuccess(json, userToken, false);
+    }
+
+    handleLoginError(message) {
         console.log('LoginComponent handleError()');
         if(this.props.openLogin === true) {
             this.setState({ error: message});
         }
     }
 
-    validLogin = (login) => {
-        if (!login.username && !login.password) {
+    validLogin = (username, password) => {
+        if (!username && !password) {
             this.handleError('Please enter User Id and Password.');
             return false;
-        } else if (!login.username) {
+        } else if (!username) {
             this.handleError('Please enter a User Id.');    
-        } else if (!login.password) {
+        } else if (!password) {
             this.handleError('Please enter a Password');
         }else {
             //make sure any previous error is cleared
@@ -49,22 +51,21 @@ class LoginComponent extends Component {
         }
     }
 
-    handleClick = (login, event) => {
-        if (this.validLogin(login)) {
+    handleLogin = (username, password, event) => {    
+        if (this.validLogin(username, password)) {
             event.preventDefault();
             //build login payload
-            const loginUrl = "http://104.155.129.244:8080/getNotesForUser";
-            //const loginUrl = "http://localhost:8080/getNotesForUser";
-            const userToken = "Basic "+base64.encode(login.username+":"+login.password)
+            const loginUrl = process.env.REACT_APP_API_URL+"/notes";
+            const userToken = "Basic "+base64.encode(username+":"+password)
             var response = FetchUtil.handleGet(loginUrl, userToken);
             response
             .then(response => response.json())
             .then(json => {
                 console.log("LoginComponent handleClick() response");
-                this.props.handleSuccess(json, userToken, false);
+                this.handleLoginSuccess(json, userToken);
             })    
             .catch((error) => {
-                this.handleError('Login failed. Please try again.');
+                this.handleLoginError('Login failed. Please try again.');
             });
         }
     } //end handleClick()
@@ -77,8 +78,8 @@ class LoginComponent extends Component {
                 <LoginFormDialog 
                     openLogin={this.props.openLogin} 
                     error={this.state.error} 
-                    styleClass={this.styleClass} 
-                    handleClick={this.handleClick}
+                    styleClass={this.state.styleClass} 
+                    handleLogin ={this.handleLogin}
                     />
                 </div>        
             </div>

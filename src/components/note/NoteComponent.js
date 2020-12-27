@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import NoteFormDialog  from './NoteFormDialog';
-import '../styles/App.css';
+import '../../styles/App.css';
 import fetch from 'node-fetch';
 import { MuiThemeProvider } from 'material-ui/styles';
 import  base64  from 'base-64';
 import { booleanLiteral } from '@babel/types';
-import FetchUtil from '../utils/FetchUtil';
+import FetchUtil from '../../utils/FetchUtil';
 
 
 class NoteComponent extends Component {
@@ -14,24 +14,21 @@ class NoteComponent extends Component {
     constructor(props) {
         super(props);
         this.state={
-            toggleError: 'false',
-            styleClass: 'showMe',
+            styleClass: 'showMe note',
             error: ''
         }
     }
-
+ 
     componentDidUpdate(prevProps, prevState, snapshot) {
         console.log('NoteComponent componentDidUpdate()');
         if (prevProps.openNote !== this.props.openNote) {
            this.setState({openNote: this.props.openNote});
-        //    this.setState({
-        //     noteModel: {
-        //       noteId: '',  
-        //       category: '',
-        //       noteText: ''
-        //     }
-        //   });
         }
+        
+        if (!this.props.openNote && this.state.error !== '') {
+            this.setState({error: ''});
+        }
+
         if (prevProps.user !== this.props.user) {
             this.setState({user: this.props.user});
         }
@@ -43,6 +40,13 @@ class NoteComponent extends Component {
             this.setState({ error: message});
         }
     }
+
+    handleValidationAndSubmit = (note, e) => {
+        console.log('stop here');
+        if (this.validNote(note)) {
+            this.props.handleNoteSubmit(note, e);
+        }
+    };
 
     validNote = (note) => {
         if (!note.category && !note.noteText) {
@@ -59,33 +63,6 @@ class NoteComponent extends Component {
         }
     }
 
-    handleSubmit = (note, event) => {
-        if (this.validNote(note)) {
-            event.preventDefault();
-            //build note payload
-            const noteUrl = "http://104.155.129.244:8080/createUpdateNote";
-            //var noteUrl = "http://localhost:8080/createUpdateNote"
-            const noteBody =  {
-                "noteId": note.noteId,
-                "category": note.category,
-                "noteText": note.noteText
-            }
-            var response = FetchUtil.handlePost(noteUrl, this.props.user, noteBody)
-                .then(response => {
-                    if (response.status === 200) {
-                        console.log("Success***");
-                        this.props.handleSuccess();
-                    }
-                })
-                 
-                .catch((error) => {
-                    console.log(error);
-                    this.handleError('Save failed. Please try again.');
-                });
-            
-        }
-    } //end handleSubmit()
-
     render() {
        
         return (
@@ -94,8 +71,8 @@ class NoteComponent extends Component {
                 <NoteFormDialog 
                     openNote={this.props.openNote} 
                     error={this.state.error} 
-                    styleClass={this.styleClass} 
-                    handleSubmit={this.handleSubmit}
+                    styleClass={this.state.styleClass} 
+                    handleNoteValSubmit={this.handleValidationAndSubmit}
                     noteModel={this.props.noteModel}
                     handleClose={this.props.handleClose}
                     />
