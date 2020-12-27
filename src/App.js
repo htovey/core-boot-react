@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
 import './styles/App.css';
 import AppBar from 'material-ui/AppBar';
-import MenuItem from 'material-ui/MenuItem'
-import LoginComponent from './components/LoginComponent';
-import NoteComponent from './components/NoteComponent';
-import NoteListComponent from './components/NoteListComponent';
-import { MuiThemeProvider } from 'material-ui/styles';
+import LoginComponent from './components/login/LoginComponent';
+import NoteComponent from './components/note/NoteComponent';
+import NoteListComponent from './components/note/NoteListComponent';
+import { createMuiTheme, MuiThemeProvider } from 'material-ui/styles'; 
 import FetchUtil from './utils/FetchUtil';
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
-import NoteModel from './models/NoteModel';
+import Tooltip from '@material-ui/core/Tooltip';
+import NoteListToolbar from './components/note/NoteListToolbarSelect';
+import CustomSnackBar from './components/custom/CustomSnackBar';
 
 class App extends Component {
   constructor() {
@@ -18,11 +17,13 @@ class App extends Component {
       noteList: [],
       openLogin: true,
       openNote: false,
-      isNoteListHidden: true,
+      showNoteList: false,
+      selectedRows: [],
       userToken: '',
       snackBarOpen: false,
       vertical: 'top',
       horizontal: 'center',
+      actionType: 'create',
       noteModel: {
         noteId: '',
         category: '',
@@ -30,6 +31,28 @@ class App extends Component {
       }
     }
   }
+
+  handleNoteSubmit = (note, event) => {
+    event.preventDefault();
+    //build note payload
+    const noteUrl = process.env.REACT_APP_API_URL+"/note"
+    const noteBody =  {
+        "noteId": note.noteId,
+        "category": note.category,
+        "noteText": note.noteText
+    }
+    var response = FetchUtil.handlePost(noteUrl, this.state.userToken, noteBody)
+        .then(response => {
+            if (response.status === 200) {
+                console.log("Success***");
+                this.handleCRUDSuccess();
+            }
+        })    
+        .catch((error) => {
+            console.log(error);
+            this.handleError('Save failed. Please try again.');
+        }); 
+}
 
   handleLoginSuccess = (notes, user, openLogin) => {
     console.log('handleLoginSuccess()');
@@ -39,15 +62,26 @@ class App extends Component {
     this.toggleNoteList();
   }
 
-  handleSaveSuccess = () => {
-    console.log('handleSaveSuccess');
-    this.setState({openNote : false});
-    this.setState({snackBarOpen: true});
+  handleCRUDSuccess = (action) => {
+    console.log("handleCRUDSuccess");
+    this.setState({
+      openNote : false, 
+      actionType: action,
+      snackBarOpen: true
+    });
     this.refreshNoteList();
   }
 
+  handleError = (message) => {
+    console.log('NoteComponent handleError()');
+    if(this.props.openNote === true) {
+        this.setState({ error: message});
+    }
+}
+
   refreshNoteList = () => {
-    var url = "http://localhost:8080/getNotesForUser"
+    console.log("refreshNoteList()");
+    var url = process.env.REACT_APP_API_URL+"/notes";
     var result = FetchUtil.handleGet(url, this.state.userToken);
     result
     .then(response => response.json())
@@ -60,10 +94,10 @@ class App extends Component {
   }
 
   toggleNoteList = () => {
-    if (this.state.isNoteListHidden == true) {
-      this.setState({isNoteListHidden: false});
+    if (this.state.showNoteList == true) {
+      this.setState({showNoteList: false});
     } else {
-      this.setState({isNoteListHidden: true});
+      this.setState({showNoteList: true});
     }
   }
 
@@ -74,6 +108,8 @@ class App extends Component {
         category: updateNoteModel.category,
         noteText: updateNoteModel.noteText
       }});
+    } else {
+      this.setState({snackBarType: "create"});
     }
     this.setState({openNote: true});
   }
@@ -104,51 +140,74 @@ class App extends Component {
     return date;
   }
 
+  getSnackbarMsg = () => {
+    var noteAction = 'created';
+    if (this.state.actionType === 'update') {
+      noteAction = 'updated';
+    } else if (this.state.actionType === 'delete') {
+      noteAction = 'deleted'
+    }
+    var msg = 'Success! Note '+noteAction+'.'
+    return msg;
+  }
+
   closeSnackBar = () => {
     this.setState({snackBarOpen: false});
   }
 
   closeNote = () => {
-      this.setState({openNote: false});
+    console.log('close note');
+    this.setState({openNote: false});
   }
 
+  setSelectedRows = (rowData) => {
+    var index = this.state.selectedRows.length;
+    rowData.map(row => {
+      this.state.selectedRows[index] = row;
+      index++;
+    });
+  }
   render() {
    
     return (
       <MuiThemeProvider>
         <div className="App">
-          <AppBar title="Notes">
-            <MenuItem onClick={this.createUpdateNote} value={''} primaryText="Create Note"/>
+          <AppBar title="Nerd Notes" showMenuIconButton={false}  className="AppBar">
+          {/* <Tooltip title="Add Note" aria-label="add">
+            <AddCircleIcon onClick={this.createUpdateNote} style={{color: "white", width: "2em", height: "2em"}} className="createNoteButton"/>
+          </Tooltip> */}
+        
           </AppBar> 
-          <Snackbar
-            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-            key={`${this.state.vertical}, ${this.state.horizontal}`}
-            open={this.state.snackBarOpen}
-            autoHideDuration={2000}
-            onClose={this.closeSnackBar}
-          >
-           <MuiAlert elevation={6} variant="filled" {...this.state.props}>
-            "Success! Note saved."
-           </MuiAlert>
-          </Snackbar>
+          <CustomSnackBar 
+            open={this.state.snackBarOpen} 
+            vertical={this.state.vertical} 
+            horizontal={this.state.horizontal}
+            getAlertMsg={this.getSnackbarMsg}
+            handleClose={this.closeSnackBar}
+          />
+          {this.state.openLogin &&
           <LoginComponent 
             openLogin={this.state.openLogin}
             handleSuccess={this.handleLoginSuccess}
-          />
+          />}
         
-         { !this.state.isNoteListHidden && 
-         <NoteListComponent 
-          handleSuccess={this.refreshNoteList} 
-          userToken={this.state.userToken} 
-          notes={this.state.noteList}
-          createUpdateNote={this.createUpdateNote}/>}
-        <NoteComponent 
-          user={this.state.userToken} 
-          openNote={this.state.openNote}
-          handleSuccess={this.handleSaveSuccess}
-          noteModel={this.state.noteModel}
-          handleClose={this.closeNote}
-        />
+          {this.state.showNoteList && 
+            <NoteListComponent 
+              handleSuccess={this.handleCRUDSuccess} 
+              userToken={this.state.userToken} 
+              notes={this.state.noteList}
+              selectedRows={this.state.selectedRows}
+              setSelectedRows={this.setSelectedRows}
+              createUpdateNote={this.createUpdateNote}/>}
+          {this.state.openNote &&
+            <NoteComponent 
+              user={this.state.userToken} 
+              openNote={this.state.openNote}
+              handleSuccess={this.handleCRUDSuccess}
+              noteModel={this.state.noteModel}
+              handleNoteSubmit={this.handleNoteSubmit}
+              handleClose={this.closeNote}
+            />}
         </div>
       </MuiThemeProvider>
     );
