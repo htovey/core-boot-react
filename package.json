@@ -1,8 +1,8 @@
 {
-  "name": "core-react",
+  "name": "core-boot-react",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://htovey.github.io/core-boot-react",
+  "homepage": "http://nerdbuffet.com/core-react",
   "dependencies": {
     "@material-ui/core": "^4.8.2",
     "@material-ui/icons": "^4.5.1",
@@ -16,7 +16,7 @@
     "camelcase": "^5.2.0",
     "case-sensitive-paths-webpack-plugin": "2.2.0",
     "css-loader": "2.1.1",
-    "dotenv": "6.2.0",
+    "dotenv": "^6.2.0",
     "dotenv-expand": "5.1.0",
     "eslint": "^6.1.0",
     "eslint-config-react-app": "^5.0.2",
@@ -37,9 +37,10 @@
     "jest-environment-jsdom-fourteen": "0.1.0",
     "jest-resolve": "24.9.0",
     "jest-watch-typeahead": "0.4.0",
+    "material-table": "^1.69.1",
     "material-ui": "^0.20.2",
     "mini-css-extract-plugin": "0.8.0",
-    "mui-datatables": "^2.14.0",
+    "mui-datatables": "^3.4.0",
     "node-fetch": "^2.6.0",
     "optimize-css-assets-webpack-plugin": "5.0.3",
     "pnp-webpack-plugin": "1.5.0",
@@ -54,6 +55,7 @@
     "react-dom": "^16.12.0",
     "react-material-ui-form-validator": "^2.0.9",
     "react-modal-login": "^1.4.2",
+    "react-select": "^3.1.0",
     "resolve": "1.12.0",
     "resolve-url-loader": "3.1.0",
     "sass-loader": "7.2.0",
@@ -75,7 +77,8 @@
     "babel-preset-react-app": "^9.0.1"
   },
   "scripts": {
-    "start": "node scripts/start.js",
+    "start": "node scripts/start.js --no-cache",
+    "remote": "REACT_APP_API_URL=http://34.68.202.207:8080  node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
     "deploy": "node scripts/build.js gh-pages -d"
