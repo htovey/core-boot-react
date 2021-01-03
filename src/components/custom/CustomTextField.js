@@ -7,8 +7,9 @@ function CustomTextField({ InputLabelProps = {}, ...props }) {
       InputLabelProps={{ ...InputLabelProps, shrink: true}}
       {...props}
       margin="dense"
+      variant="outlined"
       fullWidth
-      className="noteClass"
+      //className="noteClass"
     />
   );
 }

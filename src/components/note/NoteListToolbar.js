@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import IconButton from "@material-ui/core/IconButton";
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 import Tooltip from "@material-ui/core/Tooltip";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
@@ -13,12 +14,6 @@ const defaultToolbarStyles = {
       marginRight: "24px",
       top: "40%",
       transform: "translateY(-50%)"
-    },
-    deleteIcon: {
-      color: "#000"
-    },
-    editIcon: {
-        color: "#000"
     },
     divHeight: {
         height: "40px"
@@ -93,14 +88,17 @@ class NoteListToolbar extends Component {
        // console.log("rows selected: "+this.props.selectedRows.length);
         return (
             <div className={classes.divHeight}>
-               <Tooltip title={"Edit"}>
+                <Tooltip title="Add Note" aria-label="add">
+                    <AddCircleIcon onClick={this.createUpdateNote} style={{color: "white", width: "2em", height: "2em"}}/>
+                </Tooltip>
+                <Tooltip title={"Edit"}>
                     <IconButton className={classes.iconButton} disabled={multiSelect} onClick={this.editNote}>
-                        {!multiSelect && <EditIcon className={classes.editIcon} />}
+                        {!multiSelect && <EditIcon style={{color: "white", width: "2em", height: "2em"}} />}
                     </IconButton>
                 </Tooltip>
                 <Tooltip title={"Delete"}>
                     <IconButton className={classes.iconButton} onClick={this.handleDelete}>
-                        <DeleteIcon className={classes.deleteIcon} />
+                        <DeleteIcon style={{color: "white", width: "2em", height: "2em"}} />
                     </IconButton>
                 </Tooltip>
                 {this.props.openNote && <NoteComponent 
