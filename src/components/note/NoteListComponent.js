@@ -41,26 +41,23 @@ export default function NoteListComponent(props) {
     const options = {
         filter: true,
         filterType: "dropdown",
-        responsive: "scrollFullHeight",
+        responsive: "vertical",
         selectableRows: true,
         selectToolbarPlacement: "above",
-        customToolbar: () => {   
-         return <NoteListToolbar
-                    handleSuccess={props.handleSuccess} 
-                    noteList={props.notes} 
-                    userToken={props.userToken}
-                    selectedRows={props.selectedRows}
-                    createUpdateNote={props.createUpdateNote}/>
-        },
-        customToolbarSelect: (selectedRows) => (
+        customToolbarSelect: (selectedRows, displayData, setSelectedRows) => (
             <NoteListToolbarSelect 
                 className={"selectToolbar"}
                 selectedRows={selectedRows}
-                updateSelectedRows={props.setSelectedRows}/>
+                noteList={props.notes}
+                getNoteFormData={props.getNoteFormData}
+                userToken={props.userToken}
+                handleSuccess={props.handleSuccess}
+                setSelectedRows={setSelectedRows}
+                displayData={displayData}/>
         )
       };
 
-    const getMuiTheme  = createMuiTheme({
+    const getMuiTheme = createMuiTheme({
         overrides: {
             MUIDataTable: {
             root: {

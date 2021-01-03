@@ -6,6 +6,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import { withStyles } from '@material-ui/styles';
 import FetchUtil from '../../utils/FetchUtil';
 import NoteComponent from './NoteComponent';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 
 const defaultToolbarSelectStyles = {
@@ -15,7 +16,7 @@ const defaultToolbarSelectStyles = {
       transform: "translateY(-50%)"
     },
     deleteIcon: {
-      color: "red"
+      color: "#000"
     },
     editIcon: {
         color: "#000"
@@ -27,38 +28,24 @@ const defaultToolbarSelectStyles = {
   
 
 class NoteListToolbarSelect extends Component {
-    
-    updateRowData = (rowData) => {
-        if (rowData) {
-            this.props.updateSelectedRows(rowData);
+    constructor(props) {
+        super(props);
+        this.state={
+            loading: false
         }
     }
 
     handleDelete = () => {
+        this.setState({loading: true});
         var url = process.env.REACT_APP_API_URL+"/delete";
         var body = this.getNoteIdList(this.props.selectedRows)
         var result = FetchUtil.handlePost(url, this.props.userToken, body)
         .then(response => {
             if (response.status === 200) {
+                this.setState({loading : false});
                 console.log("Delete: Success***");
-                this.props.handleSuccess();
-            }
-        })
-         
-        .catch((error) => {
-            console.log(error);
-           // this.handleError('Delete failed. Please try again later.');
-        });
-    }
-
-    handleUpdate = () => {
-        var url = process.env.REACT_APP_API_URL+"/note";
-        var body = this.getNotePayload(this.props.selectedRows)
-        var result = FetchUtil.handlePost(url, this.props.userToken, body)
-        .then(response => {
-            if (response.status === 200) {
-                console.log("Update: Success***");
-                this.props.handleSuccess();
+                this.props.handleSuccess("delete");
+                this.resetRows();
             }
         })
          
@@ -69,8 +56,8 @@ class NoteListToolbarSelect extends Component {
     }
 
     editNote = () => {
-        var updateNote = this.props.noteList[this.props.selectedRows[0].index];
-        this.props.createUpdateNote(updateNote);
+        var updateNote = this.props.noteList[this.props.selectedRows.data[0].index];
+        this.props.getNoteFormData(updateNote);
     }
 
     getNoteIdList = (selectedRows) => {
@@ -90,13 +77,19 @@ class NoteListToolbarSelect extends Component {
         return updateNote;
     }
 
+    resetRows = () => {
+        this.props.setSelectedRows([]);
+    //    this.setState({selectedRows: { data : []}});
+    }
+
     render() {
         const { classes } = this.props;
-        this.updateRowData(this.props.selectedRows.data);
-        //console.log("rows selected: "+this.props.selectedRows.length);
+        const multiSelect = this.props.selectedRows.data.length > 1;
+     
         return (
             <div className={classes.divHeight} onChange={alert}>
-               {/* <Tooltip title={"Edit"}>
+                {this.state.loading && <CircularProgress/>} 
+                <Tooltip title={"Edit"}>
                     <IconButton className={classes.iconButton} disabled={multiSelect} onClick={this.editNote}>
                         {!multiSelect && <EditIcon className={classes.editIcon} />}
                     </IconButton>
@@ -110,7 +103,7 @@ class NoteListToolbarSelect extends Component {
                     openNote={true} 
                     noteModel={this.updateNote}
                     className="note"
-                />  } */}
+                />  }
             </div>
         );
     }

@@ -1,12 +1,7 @@
 import React, {Component} from 'react';
 import NoteFormDialog  from './NoteFormDialog';
 import '../../styles/App.css';
-import fetch from 'node-fetch';
-import { MuiThemeProvider } from 'material-ui/styles';
-import  base64  from 'base-64';
-import { booleanLiteral } from '@babel/types';
-import FetchUtil from '../../utils/FetchUtil';
-
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 class NoteComponent extends Component {
     //1) setup our state using constructor
@@ -68,14 +63,14 @@ class NoteComponent extends Component {
         return (
             <div>       
                 <div>     
-                <NoteFormDialog 
-                    openNote={this.props.openNote} 
-                    error={this.state.error} 
-                    styleClass={this.state.styleClass} 
-                    handleNoteValSubmit={this.handleValidationAndSubmit}
-                    noteModel={this.props.noteModel}
-                    handleClose={this.props.handleClose}
-                    />
+                    <NoteFormDialog 
+                        openNote={this.props.openNote} 
+                        error={this.state.error} 
+                        styleClass={this.state.styleClass} 
+                        handleNoteValSubmit={this.handleValidationAndSubmit}
+                        noteModel={this.props.noteModel}
+                        handleClose={this.props.handleClose}
+                    />          
                 </div>        
             </div>
         );

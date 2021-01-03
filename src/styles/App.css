@@ -2,8 +2,17 @@
   text-align: center;
 }
 
-.AppBar{
+.MuiAppBar-root .App div {
   height: 100px;
+}
+
+.AppBar {
+  padding: 15px 0;
+}
+
+.AppBar h1 {
+  width: 25%;
+  margin: auto;
 }
 
 .App-logo {
@@ -58,10 +67,10 @@
   transform: translateY(-50%);
 }
 
-.addNoteIcon {
+.MuiSvgIcon-root.addNoteIcon {
   fill: white;
-  color: black;
-  width: 3em;
+  color: white;
+  width: 2em;
   height: 2em;
   display: inline-block;
   font-size: 1.5rem;
@@ -96,7 +105,8 @@
 }
 
 .noteClass div {
-  padding: 10px;
+  /* padding: 5px; */
+  margin: 8px auto;
 }
 
 .noteDialog div {
@@ -125,6 +135,12 @@
   background-color: chartreuse;
 }
 
+.waitModal {
+  height: 100px;
+  width: 100px;
+  background-color: white;
+}
+
 /* Dialog Overrides */
 #mui-component-select-category {
   background-color: initial;
@@ -132,6 +148,10 @@
 
 .noteListClass .MuiTableHead-root {
   background-color: azure;
+}
+
+.MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline legend {
+  font-size: 16pt;
 }
 
 .MuiTableCell-body {

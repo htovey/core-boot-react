@@ -10,6 +10,7 @@ import { withStyles } from '@material-ui/styles';
 import { MenuItem, FormControl } from '@material-ui/core';
 import Select from '@material-ui/core/Select';
 import { CATEGORIES } from '../../constants/Categories'
+import WaitModalComponent from '../modals/WaitModalComponent';
 
 export default class NoteFormDialog extends Component {
 
@@ -60,8 +61,7 @@ export default class NoteFormDialog extends Component {
   handleSubmit = (e) => {
       e.preventDefault();
       var note = this.populateNoteModel();
-      this.props.handleNoteValSubmit(note, e); 
-      this.resetFormState(); 
+      this.props.handleNoteValSubmit(note, e);  
   }
 
   handleSelect = (e) => {
@@ -69,7 +69,7 @@ export default class NoteFormDialog extends Component {
   }
 
   handleCancel = () => {
-    this.resetFormState();
+   // this.resetFormState();
     console.log('handleCancel');
     return this.props.handleClose();
   }
@@ -88,12 +88,6 @@ export default class NoteFormDialog extends Component {
     return noteModel;
   }
   
-  resetFormState = () => {
-    this.setState({
-      categoryInput: '',
-      noteTextInput: ''
-   });
-  }
   render () {
     const StyledContent = withStyles({root: {color : 'red'}})(DialogContentText);
     return (
@@ -106,7 +100,6 @@ export default class NoteFormDialog extends Component {
             <StyledContent>
               {this.props.error}
             </StyledContent>
-           
             <Select
               value={this.getCategoryValue()}
               displayEmpty
@@ -119,64 +112,15 @@ export default class NoteFormDialog extends Component {
               fullWidth
             >
               {this.state.categoryList}
-            </Select>
-            {/* CUSTOM TEXT FIELD WITH SELECT ************* */}
-
-            {/* <CustomTextField
-              margin="dense"
-              name="category"
-              required
-              variant="outlined"
-              select
-              SelectProps={
-                  { 
-                    renderValue: () => this.getCategoryValue(),
-                    //onChange: (e) => this.setState({categoryInput: e.target.value}),
-                    onChange: (e) => this.handleSelect(e),
-                    displayEmpty: true,
-                 }
-              } 
-              //value={this.props.noteModel.category || ""}
-              children={this.state.categoryList}
-              label="Category"
-              fullWidth
-              className={"noteClass"}
-            >  
-            </CustomTextField> */}
-
-
-            {/* react select ******************************************************/}
-
-            {/* <Select 
-              margin="dense"
-              name="category"
-              fullWidth           
-              onChange={(inputSelection) => {this.setState({ categoryInput: inputSelection })}} 
-              selectValue={this.props.noteModel.category || this.state.categoryInput}
-              options={ 
-                  CATEGORIES.map(function(category, i) {
-                    return {key: i, value: category, label: category}
-                  })
-                  // CATEGORIES.map(function(category, i) {
-                  //  return <option key={i} value={category}>{category}</option>
-                  //  })
-               } 
-               placeholder={this.props.noteModel.category || "Please select"}
-                >
-            </Select> */}
-        
+            </Select>    
              <CustomTextField
-              margin="dense"
               name="noteText"
               required
               defaultValue={this.props.noteModel.noteText || ''}
               onChange={(e) => this.setState({noteTextInput: e.target.value})}
               label="Note"
-              fullWidth
               multiline
               rows="15"
-              className={"noteClass"}
-              variant="outlined"
             />
          
           </DialogContent>

@@ -28,7 +28,12 @@ export default function LoginFormDialog (props) {
 
     return (
      
-        <Dialog open={props.openLogin} onClose={props.handleClose} aria-labelledby="form-dialog-title" onKeyPress={(e) => handleEnterKey(e)} >
+        <Dialog 
+          className={"noteClass"}
+          open={props.openLogin} 
+          onClose={props.handleClose} 
+          aria-labelledby="form-dialog-title" 
+          onKeyPress={(e) => handleEnterKey(e)} >
           <DialogContent>
             <StyledContent>
               {props.error}
@@ -40,8 +45,6 @@ export default function LoginFormDialog (props) {
               required
               inputRef={el => unameRef = el}
               label="User Id"
-              fullWidth
-              variant="outlined"
               defaultValue={"ht5"}
             />
              <CustomTextField
@@ -49,8 +52,6 @@ export default function LoginFormDialog (props) {
               required
               inputRef={el => pwRef = el} 
               label="Password"
-              fullWidth
-              variant="outlined"
               defaultValue="hockey"
             />
          
